@@ -1,10 +1,18 @@
 #!<%= ENV["SHELL"] || "/bin/bash" %>
 
 <%- if tmux_has_session? name -%>
-  cd <%= root || "." %>
 
-  # Run on_project_stop command
-  <%= hook_on_project_stop %>
+  # add shutdown window to execute from within root session of project
+  tmux new-window -n "mux-shutdown" -t "<%= name %>" "\
+    cd <%= root || "." %> && \
+    <%= hook_on_project_stop %> && \
+    <%= tmux_kill_session_command %> \
+    "
 
-  <%= tmux_kill_session_command %>
+  <%# cd <%= root || "." %1> %>
+
+  <%# # Run on_project_stop command %>
+  <%# <%= hook_on_project_stop %1> %>
+
+  <%# <%= tmux_kill_session_command %1> %>
 <%- end -%>
