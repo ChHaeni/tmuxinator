@@ -1,3 +1,14 @@
 #!<%= ENV["SHELL"] || "/bin/bash" %>
 
-echo "<%= sessions_file %>"
+# make sure .sessions exists
+touch "<%= sessions_file %>"
+
+# .sessions format: "mux project name"$"tmux session name"
+
+# get project/sessions
+
+# get running tmux sessions
+
+# set-diff
+
+# update .sessions
