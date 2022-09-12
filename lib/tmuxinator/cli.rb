@@ -200,12 +200,21 @@ module Tmuxinator
         end
       end
 
+      def update_running()
+        sessions_file = Tmuxinator::Config.sessions
+        config = Tmuxinator::Config.running_template
+        erb = Tmuxinator::Project.render_template(config, binding)
+        system(erb)
+      end
+
       def render_project(project)
         if project.deprecations.any?
           project.deprecations.each { |deprecation| say deprecation, :red }
           show_continuation_prompt
         end
-
+        #~~~ "debug"
+        update_running()
+        #~~~
         Kernel.exec(project.render)
       end
 

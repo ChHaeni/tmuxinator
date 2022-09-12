@@ -67,6 +67,14 @@ module Tmuxinator
         exist?(name: "default")
       end
 
+      def sessions
+        "#{directory}/.sessions"
+      end
+
+      def sessions?
+        exists?(name: "sessions")
+      end
+
       def version
         if Tmuxinator::Doctor.installed?
           tmux_version = `tmux -V`.split(" ")[1]
@@ -116,6 +124,10 @@ module Tmuxinator
 
       def template
         asset_path "template.erb"
+      end
+
+      def running_template
+        asset_path "template-running.erb"
       end
 
       def stop_template
