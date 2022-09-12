@@ -213,7 +213,8 @@ module Tmuxinator
           show_continuation_prompt
         end
         #~~~ "debug"
-        update_running()
+        # update_running()
+        puts project.render
         #~~~
         Kernel.exec(project.render)
       end

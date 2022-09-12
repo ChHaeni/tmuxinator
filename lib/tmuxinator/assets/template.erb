@@ -6,6 +6,9 @@ unset RBENV_DIR
 
 <%= tmux %> start-server;
 
+# get running tmux sessions
+sessions_before=$( tmux list-sessions -F '#{session_name}' )
+
 cd <%= root || "." %>
 
 # Run on_project_start command.
@@ -97,6 +100,17 @@ cd <%= root || "." %>
   # Run on_project_restart command.
   <%= hook_on_project_restart %>
 <%- end -%>
+
+# get running tmux sessions
+sessions_after=$( tmux list-sessions -F '#{session_name}' )
+
+# get set-diff
+mux_sessions=$( echo "${sessions_before}\$${sessions_after}" | tr '$' '\n' \
+  | sort | uniq -u | sed 's/^/<%= name %>:/' )
+
+# update .sessions 
+<%# printf "$mux_sessions\n" >> <%= sessions_file %1> %>
+# TODO: add sessions variable to calling env
 
 <%- if attach? -%>
   if [ -z "$TMUX" ]; then
