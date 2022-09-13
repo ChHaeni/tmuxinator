@@ -74,7 +74,7 @@ module Tmuxinator
       end
 
       def sessions?
-        exists?(name: "sessions")
+        File.exist?(sessions)
       end
 
       def version
