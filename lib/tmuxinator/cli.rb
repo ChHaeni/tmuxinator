@@ -243,6 +243,34 @@ module Tmuxinator
         }
       end
 
+      def get_parent()
+        if Tmuxinator::Config.sessions?
+          # update
+          update_running()
+          # get all projects
+          yaml = begin
+            content = File.read(Tmuxinator::Config.sessions)
+            puts content
+            # TODO: fix .sessions format!!!
+            #   -> "tmux session": "mux project"
+            YAML.safe_load(content)
+          rescue SyntaxError, StandardError => error
+            raise "Failed to parse .sessions file: #{error.message}"
+          end
+          #~~~ debug
+          puts yaml
+        else
+          # return empty string
+          # rescue SyntaxError, StandardError => error
+          #   raise "meeeh .sessions file: #{error.message}"
+        end
+        # TODO
+        #     - read erb
+        #     - add function update_running -> templ-running.erb
+        #  - cli.rb
+        #     - run new function in start/render/etc.
+      end
+
       def update_running()
         sessions_file = Tmuxinator::Config.sessions
         config = Tmuxinator::Config.running_template
@@ -255,10 +283,6 @@ module Tmuxinator
           project.deprecations.each { |deprecation| say deprecation, :red }
           show_continuation_prompt
         end
-        #~~~ "debug"
-        # update_running()
-        puts project.render
-        #~~~
         Kernel.exec(project.render)
       end
 
@@ -357,7 +381,13 @@ module Tmuxinator
       if options["project-config"]
         name = nil
       end
-
+      #~~~ "debug"
+      # check branch chhaeni
+      # update_running()
+      get_parent()
+      `sleep 1`
+      # puts project.render
+      #~~~
       params = {
         name: name,
         project_config: options["project-config"]
