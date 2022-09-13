@@ -109,8 +109,7 @@ mux_sessions=$( echo "${sessions_before}\$${sessions_after}" | tr '$' '\n' \
   | sort | uniq -u | sed 's/^/<%= name %>:/' )
 
 # update .sessions 
-<%# printf "$mux_sessions\n" >> <%= sessions_file %1> %>
-# TODO: add sessions variable to calling env
+printf "$mux_sessions\n" >> <%= sessions_file %>
 
 <%- if attach? -%>
   if [ -z "$TMUX" ]; then
