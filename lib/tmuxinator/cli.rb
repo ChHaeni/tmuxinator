@@ -200,39 +200,28 @@ module Tmuxinator
         end
       end
 
-      def get_parent()
+      def get_parent(session_name)
         if Tmuxinator::Config.sessions?
           # update
           update_running()
           # get all projects
           yaml = begin
             content = File.read(Tmuxinator::Config.sessions)
-            puts content
-            # TODO: fix .sessions format!!!
-            #   -> "tmux session": "mux project"
             YAML.safe_load(content)
           rescue SyntaxError, StandardError => error
             raise "Failed to parse .sessions file: #{error.message}"
           end
-          #~~~ debug
-          puts yaml
-        else
-          # return empty string
-          # rescue SyntaxError, StandardError => error
-          #   raise "meeeh .sessions file: #{error.message}"
+          return yaml[session_name]
         end
-        # TODO
-        #     - read erb
-        #     - add function update_running -> templ-running.erb
-        #  - cli.rb
-        #     - run new function in start/render/etc.
+        # FIXME: what if no session file?
+        exit!('.session file does not exist')
       end
 
       def update_running()
         sessions_file = Tmuxinator::Config.sessions
         config = Tmuxinator::Config.running_template
         erb = Tmuxinator::Project.render_template(config, binding)
-        system(erb)
+        Kernel.system(erb)
       end
 
       def render_project(project)
@@ -306,19 +295,19 @@ module Tmuxinator
     method_option "suppress-tmux-version-warning",
                   desc: "Don't show a warning for unsupported tmux versions"
 
-    def stop(name)
-      # project-config takes precedence over a named project in the case that
-      # both are provided.
-      if options["project-config"]
-        name = nil
-      end
-      #~~~ "debug"
-      # check branch chhaeni
-      # update_running()
-      get_parent()
-      `sleep 1`
-      # puts project.render
-      #~~~
+    def stop(*name)
+      if name.empty?
+        # get calling tmux session name (remove newline at end)
+        session_name = `tmux display-message -p '\#{session_name}' | sed 's/^\\(.*\\)$/\\1/'`.chomp()
+        name = get_parent(session_name)
+      else
+        # project-config takes precedence over a named project in the case that
+        # both are provided.
+        if options["project-config"]
+          name = nil
+        else
+          name = name[0]
+        end
       params = {
         name: name,
         project_config: options["project-config"]
