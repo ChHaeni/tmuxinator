@@ -106,10 +106,13 @@ sessions_after=$( tmux list-sessions -F '#{session_name}' )
 
 # get set-diff
 mux_sessions=$( echo "${sessions_before}\$${sessions_after}" | tr '$' '\n' \
-  | sort | uniq -u | sed 's/^/<%= name %>:/' )
+  | sort | uniq -u | sed -n 's/^\(.*\)$/\1: <%= name %>/p' )
 
-# update .sessions 
-printf "$mux_sessions\n" >> <%= sessions_file %>
+# update .sessions yaml
+if [ -n "$mux_sessions" ]; then
+  touch <%= sessions_file %>
+  printf "$mux_sessions\n" >> <%= sessions_file %>
+fi
 
 <%- if attach? -%>
   if [ -z "$TMUX" ]; then
