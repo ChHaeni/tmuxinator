@@ -122,6 +122,7 @@ module Tmuxinator
     end
 
     def render
+      sessions_file = Tmuxinator::Config.sessions
       self.class.render_template(Tmuxinator::Config.template, binding)
     end
 
