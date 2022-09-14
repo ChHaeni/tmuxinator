@@ -260,7 +260,8 @@ module Tmuxinator
         exit!('.session file does not exist')
       end
 
-      def update_running()
+      def update_running(remove_me = nil)
+        remove_session = remove_me
         sessions_file = Tmuxinator::Config.sessions
         config = Tmuxinator::Config.running_template
         erb = Tmuxinator::Project.render_template(config, binding)
@@ -380,8 +381,6 @@ module Tmuxinator
           name = name[0]
         end
       end
-      # update .sessions
-      update_running()
       params = {
         name: name,
         project_config: options["project-config"]
@@ -391,6 +390,8 @@ module Tmuxinator
       )
 
       project = create_project(params)
+      # update .sessions and remove current proj sessions
+      update_running(name)
       kill_project(project)
     end
 
