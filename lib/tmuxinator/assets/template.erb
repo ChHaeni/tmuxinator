@@ -104,7 +104,7 @@ cd <%= root || "." %>
 # get running tmux sessions
 sessions_after=$( tmux list-sessions -F '#{session_name}' )
 
-# get set-diff
+# get union
 if [ "$sessions_before" != '' ]
 then
   mux_sessions=$( echo "${sessions_before}\$${sessions_after}" | tr '$' '\n' \

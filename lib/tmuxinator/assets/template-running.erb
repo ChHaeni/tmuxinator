@@ -1,14 +1,32 @@
-#!<%= ENV["SHELL"] || "/bin/bash" %>
+# .sessions format: "tmux session name": "mux project name"
 
 # make sure .sessions exists
 touch "<%= sessions_file %>"
 
-# .sessions format: "mux project name"$"tmux session name"
-
-# get project/sessions
-
 # get running tmux sessions
+running="$( tmux list-sessions -F '#{session_name}' )"
 
-# set-diff
+# find intersect and write to file
+first=''
+cat "<%= sessions_file %>" | sort | uniq | while read line
+do
+  # empty file
+  if [ "$first" = '' ]
+  then
+    > "<%= sessions_file %>"
+    first="done"
+  fi
+  # get sesssion name
+  sess="$( echo "$line" | sed 's/:.*//' )"
+  # check match
+  for s in $running
+  do
+    if [ "$s" = "$sess" ]
+    then
+      printf "${line}\n" >> "<%= sessions_file %>"
+      continue
+    fi
+  done
+done
 
-# update .sessions
+# empty file if no match

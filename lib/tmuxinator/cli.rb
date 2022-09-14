@@ -285,6 +285,8 @@ module Tmuxinator
       )
 
       project = create_project(params)
+      # update .sessions
+      update_running()
       render_project(project)
     end
 
@@ -308,6 +310,9 @@ module Tmuxinator
         else
           name = name[0]
         end
+      end
+      # update .sessions
+      update_running()
       params = {
         name: name,
         project_config: options["project-config"]
