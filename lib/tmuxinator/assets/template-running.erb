@@ -16,13 +16,20 @@ do
     > "<%= sessions_file %>"
     first="done"
   fi
-  # get sesssion name
+  # get session name
   sess="$( echo "$line" | sed 's/:.*//' )"
   # check match
   for s in $running
   do
     if [ "$s" = "$sess" ]
     then
+      <% if !remove_me.nil? %>
+        proj=$( echo "$line" | sed 's/.*: //' )
+        if [ "$proj" = "<%= remove_me %>" ]
+        then
+          continue
+        fi
+      <% end %>
       printf "${line}\n" >> "<%= sessions_file %>"
       continue
     fi
