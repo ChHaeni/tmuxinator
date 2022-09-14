@@ -211,6 +211,9 @@ module Tmuxinator
           rescue SyntaxError, StandardError => error
             raise "Failed to parse .sessions file: #{error.message}"
           end
+          if yaml.nil?
+            exit!('No tmuxinator session running')
+          end
           return yaml[session_name]
         end
         # FIXME: what if no session file?
@@ -302,7 +305,7 @@ module Tmuxinator
       if name.empty?
         # get calling tmux session name (remove newline at end)
         session_name = `tmux display-message -p '\#{session_name}' | sed 's/^\\(.*\\)$/\\1/'`.chomp()
-        name = get_parent(session_name)
+        name = get_parent(session_name) || exit!('Not inside a tmuxinator project!')
       else
         # project-config takes precedence over a named project in the case that
         # both are provided.
