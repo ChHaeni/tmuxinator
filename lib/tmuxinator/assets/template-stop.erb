@@ -5,7 +5,7 @@
   # add shutdown window to execute from within root session of project
   tmux new-window -n "mux-shutdown" -t "<%= name %>" "\
     cd <%= root || "." %> && \
-    <%= hook_on_project_stop %> && \
+    <%= hook_on_project_stop %>; \
     <%= tmux_kill_session_command %> \
     "
 
