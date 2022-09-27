@@ -67,7 +67,7 @@ module Tmuxinator
     desc "completions [arg1 arg2]", COMMANDS[:completions]
 
     def completions(arg)
-      if %w(start stop edit open copy delete).include?(arg)
+      if %w(start stop edit open copy delete s sto e).include?(arg)
         configs = Tmuxinator::Config.configs
         say configs.join("\n")
       end

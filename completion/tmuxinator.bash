@@ -14,7 +14,7 @@ _tmuxinator() {
         unset words[0]
         unset words[$COMP_CWORD]
         local completions
-        completions=$(tmuxinator completions "${words[@]}")
+        completions=$(tmuxinator completions "${words[1]}")
         COMPREPLY=( $(compgen -W "$completions" -- "$word") )
     fi
 }
