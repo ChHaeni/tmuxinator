@@ -70,7 +70,7 @@ module Tmuxinator
       end
 
       def sessions
-        host = `hostname`.chomp()
+        host = `hostname`.chomp
         "#{directory}/.sessions_" + host
       end
 
