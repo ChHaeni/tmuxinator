@@ -203,7 +203,7 @@ module Tmuxinator
       def get_parent(session_name)
         if Tmuxinator::Config.sessions?
           # update
-          update_running()
+          update_running
           # get all projects
           yaml = begin
             content = File.read(Tmuxinator::Config.sessions)
@@ -212,12 +212,12 @@ module Tmuxinator
             raise "Failed to parse .sessions file: #{error.message}"
           end
           if yaml.nil?
-            exit!('No tmuxinator session running')
+            exit!("No tmuxinator session running")
           end
           return yaml[session_name]
         end
         # FIXME: what if no session file?
-        exit!('.session file does not exist')
+        exit!(".session file does not exist")
       end
 
       def update_running(remove_me = nil)
@@ -290,7 +290,7 @@ module Tmuxinator
 
       project = create_project(params)
       # update .sessions
-      update_running()
+      update_running
       render_project(project)
     end
 
@@ -304,8 +304,10 @@ module Tmuxinator
     def stop(*name)
       if name.empty?
         # get calling tmux session name (remove newline at end)
-        session_name = `tmux display-message -p '\#{session_name}' | sed 's/^\\(.*\\)$/\\1/'`.chomp()
-        name = get_parent(session_name) || exit!('Not inside a tmuxinator project!')
+        session_name = `tmux display-message -p \\
+          '\#{session_name}' | sed 's/^\\(.*\\)$/\\1/'`.chomp
+        name = get_parent(session_name) ||
+               exit!("Not inside a tmuxinator project!")
       else
         # project-config takes precedence over a named project in the case that
         # both are provided.
