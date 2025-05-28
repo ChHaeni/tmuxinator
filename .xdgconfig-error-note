@@ -1,0 +1,7 @@
+
+- error: undefined method '[]' for module XDG
+
+-> gem uninstall xdg 
+-> gem install (--user-install) xdg -v 2.2.5
+
+=> Fix dependencies one day!
